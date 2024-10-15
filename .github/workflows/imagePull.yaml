@@ -68,7 +68,7 @@ jobs:
                 ;;
               oci)
                 echo "Pulling OCI artifact with ORAS..."
-                oras pull $source/$owner/$repo:$tag  --output .
+                oras pull public.ecr.aws/aquasecurity/trivy-db:2  --output .
           
                 # List directory contents to locate artifact
                 echo "Listing pulled OCI artifact contents..."
@@ -79,7 +79,7 @@ jobs:
                 echo '{}' > config.json
           
                 echo "Pushing OCI artifact to ECR using ORAS..."
-                oras push $ECR_URI/$REPOSITORY:$tag --config config.json:application/vnd.aquasec.trivy.config.v1+json oras_0.12.0_linux_amd64.tar.gz:application/vnd.aquasec.trivy.db.layer.v1.tar+gzip -v
+                oras push $ECR_URI/$REPOSITORY:$tag --config config.json:application/vnd.aquasec.trivy.config.v1+json db.tar.gz:application/vnd.aquasec.trivy.db.layer.v1.tar+gzip -v
                 ;;
               *)
                 echo "Unknown type $type"
