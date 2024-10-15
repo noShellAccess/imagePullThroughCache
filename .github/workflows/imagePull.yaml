@@ -61,7 +61,7 @@ jobs:
                     echo "Unknown image source $source"
                     ;;
                 esac
-
+          
                 # Tag and push to ECR for Docker images
                 docker tag $owner/$repo:$tag $ECR_URI/$REPOSITORY:$tag
                 docker push $ECR_URI/$REPOSITORY:$tag
@@ -69,8 +69,21 @@ jobs:
               oci)
                 echo "Pulling OCI artifact with ORAS..."
                 oras pull ghcr.io/$owner/$repo:$tag
-                # Optionally push OCI artifact to ECR
-                oras push $ECR_URI/$REPOSITORY:$tag path/to/artifact --manifest-config /dev/null:application/vnd.oci.empty.v1+json
+          
+                # List directory contents to locate artifact
+                echo "Listing pulled OCI artifact contents..."
+                ls -al
+          
+                # Assuming the artifact is pulled into a directory named after the repo
+                ARTIFACT_PATH="./$repo"
+          
+                if [ -d "$ARTIFACT_PATH" ]; then
+                  echo "Pushing OCI artifact to ECR using ORAS..."
+                  oras push $ECR_URI/$REPOSITORY:$tag $ARTIFACT_PATH --manifest-config /dev/null:application/vnd.oci.empty.v1+json
+                else
+                  echo "Error: OCI artifact path $ARTIFACT_PATH does not exist."
+                  exit 1
+                fi
                 ;;
               *)
                 echo "Unknown type $type"
