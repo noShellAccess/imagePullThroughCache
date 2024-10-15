@@ -68,19 +68,19 @@ jobs:
                 ;;
               oci)
                 echo "Pulling OCI artifact with ORAS..."
-                oras pull ghcr.io/$owner/$repo:$tag
+                oras pull ghcr.io/$owner/$repo:$tag -o oci-artifacts
           
                 # List directory contents to locate artifact
                 echo "Listing pulled OCI artifact contents..."
                 ls -al 
                 pwd
           
-                # Assuming the artifact is pulled into a directory named after the repo
-                ARTIFACT_PATH="."
+                 # Create a manifest configuration file
+                echo '{}' > manifest-config.json
           
                 if [ -d "$ARTIFACT_PATH" ]; then
                   echo "Pushing OCI artifact to ECR using ORAS..."
-                  oras push $ECR_URI/$REPOSITORY:$tag $ARTIFACT_PATH --manifest-config manifest-config.json:application/vnd.oci.artifact.config.v1+json
+                  oras push $ECR_URI/$REPOSITORY:$tag oci-artifacts/ --manifest-config manifest-config.json:application/vnd.oci.artifact.config.v1+json
                 else
                   echo "Error: OCI artifact path $ARTIFACT_PATH does not exist."
                   exit 1
