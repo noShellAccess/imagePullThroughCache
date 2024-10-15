@@ -74,13 +74,16 @@ jobs:
                 echo "Listing pulled OCI artifact contents..."
                 ls -al 
                 pwd
+                
+                # Create a minimal config file
+                echo '{}' > config.json
           
                 # Assuming the artifact is pulled into a directory named after the repo
                 ARTIFACT_PATH="."
           
                 if [ -d "$ARTIFACT_PATH" ]; then
                   echo "Pushing OCI artifact to ECR using ORAS..."
-                  oras push $ECR_URI/$REPOSITORY:$tag $ARTIFACT_PATH --manifest-config /dev/null:application/vnd.oci.artifact.config.v1+json
+                  oras push $ECR_URI/$REPOSITORY:$tag $ARTIFACT_PATH --manifest-config config.json:application/vnd.oci.artifact.config.v1+json
                 else
                   echo "Error: OCI artifact path $ARTIFACT_PATH does not exist."
                   exit 1
