@@ -42,6 +42,8 @@ jobs:
           echo "$IMAGES" > images.txt
 
       - name: Pull and sync images
+        env:
+          REPOSITORY: trivy-images
         run: |
           ECR_URI=${{ steps.login-ecr.outputs.registry }}
           while IFS="|" read -r name source owner repo tag; do
@@ -61,6 +63,6 @@ jobs:
             esac
           
             # Optionally tag and push to ECR
-            docker tag $owner/$repo:$tag $ECR_URI/$name:$tag
-            docker push $ECR_URI/$name:$tag
+            docker tag $owner/$repo:$tag $ECR_URI/$REPOSITORY:$tag
+            docker push $ECR_URI/$REPOSITORY:$tag
           done < images.txt
