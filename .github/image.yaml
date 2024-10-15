@@ -11,3 +11,10 @@ images:
     owner: aquasecurity
     repo: trivy-db
     tag: 2
+  - name: trivy-db
+    type: oci
+    source: public.ecr.aws
+    owner: aquasecurity
+    repo: trivy-db
+    tag: 2
+

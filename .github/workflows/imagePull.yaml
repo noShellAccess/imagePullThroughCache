@@ -68,7 +68,7 @@ jobs:
                 ;;
               oci)
                 echo "Pulling OCI artifact with ORAS..."
-                oras pull ghcr.io/$owner/$repo:$tag
+                oras pull $source/$owner/$repo:$tag  --output .
           
                 # List directory contents to locate artifact
                 echo "Listing pulled OCI artifact contents..."
@@ -78,16 +78,8 @@ jobs:
                 # Create a minimal config file
                 echo '{}' > config.json
           
-                # Assuming the artifact is pulled into a directory named after the repo
-                ARTIFACT_PATH="."
-          
-                if [ -d "$ARTIFACT_PATH" ]; then
-                  echo "Pushing OCI artifact to ECR using ORAS..."
-                  oras push $ECR_URI/$REPOSITORY:$tag $ARTIFACT_PATH --manifest-config config.json:application/vnd.oci.artifact.config.v1+json
-                else
-                  echo "Error: OCI artifact path $ARTIFACT_PATH does not exist."
-                  exit 1
-                fi
+                echo "Pushing OCI artifact to ECR using ORAS..."
+                oras push $ECR_URI/$REPOSITORY:$tag --config config.json:application/vnd.aquasec.trivy.config.v1+json db.tar.gz:application/vnd.aquasec.trivy.db.layer.v1.tar+gzip
                 ;;
               *)
                 echo "Unknown type $type"
