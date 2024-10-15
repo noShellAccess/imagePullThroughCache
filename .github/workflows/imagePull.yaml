@@ -43,7 +43,7 @@ jobs:
 
       - name: Pull and sync images
         env:
-          REPOSITORY: trivy-images
+          REPOSITORY: test-images
         run: |
           ECR_URI=${{ steps.login-ecr.outputs.registry }}
           while IFS="|" read -r name source owner repo tag; do
