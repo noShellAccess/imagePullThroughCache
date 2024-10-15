@@ -36,9 +36,9 @@ jobs:
           IMAGES=$(python3 -c "
           import yaml
           with open('$CONFIG_FILE', 'r') as file:
-          config = yaml.safe_load(file)
+              config = yaml.safe_load(file)
           for image in config['images']:
-          print(f'{image['name']}|{image['source']}|{image['owner']}|{image['repo']}|{image['tag']}')
+              print(f'{image['name']}|{image['source']}|{image['owner']}|{image['repo']}|{image['tag']}')
           ")
           echo "$IMAGES" > images.txt
 
