@@ -80,7 +80,7 @@ jobs:
           
                 if [ -d "$ARTIFACT_PATH" ]; then
                   echo "Pushing OCI artifact to ECR using ORAS..."
-                  oras push $ECR_URI/$REPOSITORY:$tag $ARTIFACT_PATH --manifest-config /dev/null:application/vnd.oci.empty.v1+json
+                  oras push $ECR_URI/$REPOSITORY:$tag $ARTIFACT_PATH --manifest-config manifest-config.json:application/vnd.oci.artifact.config.v1+json
                 else
                   echo "Error: OCI artifact path $ARTIFACT_PATH does not exist."
                   exit 1
