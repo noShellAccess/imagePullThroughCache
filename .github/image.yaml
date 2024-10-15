@@ -7,12 +7,6 @@ images:
     tag: 0.56.2
   - name: trivy-db
     type: oci
-    source: ghcr
-    owner: aquasecurity
-    repo: trivy-db
-    tag: 2
-  - name: trivy-db
-    type: oci
     source: public.ecr.aws
     owner: aquasecurity
     repo: trivy-db
