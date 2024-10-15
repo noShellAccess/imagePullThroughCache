@@ -29,17 +29,16 @@ jobs:
           sudo apt-get install jq python3-pip
           pip3 install pyyaml
 
-      - name: Load configuration
+      - name: Install yq
+        run: |
+          sudo apt-get update && sudo apt-get install -y python3-pip
+          pip3 install yq
+
+      - name: Load configuration with yq
         id: load_config
         run: |
           CONFIG_FILE=".github/image.yaml"
-          IMAGES=$(python3 -c "
-          import yaml
-          with open('$CONFIG_FILE', 'r') as file:
-              config = yaml.safe_load(file)
-          for image in config['images']:
-              print(f'{image['name']}|{image['source']}|{image['owner']}|{image['repo']}|{image['tag']}')
-          ")
+          IMAGES=$(yq -r '.images[] | "\(.name)|\(.source)|\(.owner)|\(.repo)|\(.tag)"' $CONFIG_FILE)
           echo "$IMAGES" > images.txt
 
       - name: Pull and sync images
