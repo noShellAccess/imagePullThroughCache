@@ -67,8 +67,9 @@ jobs:
                 docker push $ECR_URI/$REPOSITORY:$tag
                 ;;
               oci)
+                mkdir ociImage
                 echo "Pulling OCI artifact with ORAS..."
-                oras pull public.ecr.aws/aquasecurity/trivy-db:2  --output /home/runner/work/imagePullThroughCache/imagePullThroughCache
+                oras pull public.ecr.aws/aquasecurity/trivy-db:2  --output ociImage
           
                 # List directory contents to locate artifact
                 echo "Listing pulled OCI artifact contents..."
@@ -76,8 +77,8 @@ jobs:
                 pwd
                 
                 # Create a minimal config file
+                cd ociImage
                 echo '{}' > config.json
-          
                 echo "Pushing OCI artifact to ECR using ORAS..."
                 oras push $ECR_URI/$REPOSITORY:$tag --config config.json:application/vnd.aquasec.trivy.config.v1+json db.tar.gz:application/vnd.aquasec.trivy.db.layer.v1.tar+gzip -v
                 ;;
