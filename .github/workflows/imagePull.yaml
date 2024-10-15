@@ -68,12 +68,11 @@ jobs:
                 ;;
               oci)
                 echo "Pulling OCI artifact with ORAS..."
-                oras pull public.ecr.aws/aquasecurity/trivy-db:2  --output .
+                oras pull public.ecr.aws/aquasecurity/trivy-db:2  --output /home/runner/work/imagePullThroughCache/imagePullThroughCache
           
                 # List directory contents to locate artifact
                 echo "Listing pulled OCI artifact contents..."
-                ls -al | grep "oras" 
-                mv oras_0.12.0_linux_amd64.tar.gz db.tar.gz
+                ls -al
                 pwd
                 
                 # Create a minimal config file
