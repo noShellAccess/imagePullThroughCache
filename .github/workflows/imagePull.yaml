@@ -72,10 +72,11 @@ jobs:
           
                 # List directory contents to locate artifact
                 echo "Listing pulled OCI artifact contents..."
-                ls -al
+                ls -al 
+                pwd
           
                 # Assuming the artifact is pulled into a directory named after the repo
-                ARTIFACT_PATH="./$repo"
+                ARTIFACT_PATH="."
           
                 if [ -d "$ARTIFACT_PATH" ]; then
                   echo "Pushing OCI artifact to ECR using ORAS..."
