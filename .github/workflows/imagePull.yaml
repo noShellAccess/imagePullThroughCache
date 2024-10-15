@@ -1,0 +1,67 @@
+name: Multi-Registry Image Sync
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # Run daily
+  workflow_dispatch:
+
+jobs:
+  sync_images:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install jq python3-pip
+          pip3 install pyyaml
+
+      - name: Load configuration
+        id: load_config
+        run: |
+          CONFIG_FILE=".github/image.yaml"
+          IMAGES=$(python3 -c "
+          import yaml
+          with open('$CONFIG_FILE', 'r') as file:
+          config = yaml.safe_load(file)
+          for image in config['images']:
+          print(f'{image['name']}|{image['source']}|{image['owner']}|{image['repo']}|{image['tag']}')
+          ")
+          echo "$IMAGES" > images.txt
+
+      - name: Pull and sync images
+        run: |
+          ECR_URI=${{ steps.login-ecr.outputs.registry }}
+          while IFS="|" read -r name source owner repo tag; do
+            echo "Processing $name from $source"
+            case "$source" in
+              dockerhub)
+                echo "Pulling from Docker Hub..."
+                docker pull $owner/$repo:$tag
+                ;;
+              ghcr)
+                echo "Pulling from GHCR..."
+                docker pull ghcr.io/$owner/$repo:$tag
+                ;;
+              *)
+                echo "Unknown source $source"
+                ;;
+            esac
+          
+            # Optionally tag and push to ECR
+            docker tag $owner/$repo:$tag $ECR_URI/$name:$tag
+            docker push $ECR_URI/$name:$tag
+          done < images.txt
