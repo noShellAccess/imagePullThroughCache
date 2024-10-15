@@ -1,10 +1,12 @@
 images:
   - name: trivy
+    type: image
     source: dockerhub
     owner: aquasec
     repo: trivy
     tag: 0.56.2
   - name: trivy-db
+    type: oci
     source: ghcr
     owner: aquasecurity
     repo: trivy-db
