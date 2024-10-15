@@ -73,14 +73,13 @@ jobs:
                 # List directory contents to locate artifact
                 echo "Listing pulled OCI artifact contents..."
                 ls -al | grep "oras" 
-                
                 pwd
                 
                 # Create a minimal config file
                 echo '{}' > config.json
           
                 echo "Pushing OCI artifact to ECR using ORAS..."
-                oras push $ECR_URI/$REPOSITORY:$tag --config config.json:application/vnd.aquasec.trivy.config.v1+json oras_0.12.0_linux_amd64.tar.gz:application/vnd.aquasec.trivy.db.layer.v1.tar+gzip
+                oras push $ECR_URI/$REPOSITORY:$tag --config config.json:application/vnd.aquasec.trivy.config.v1+json oras_0.12.0_linux_amd64.tar.gz:application/vnd.aquasec.trivy.db.layer.v1.tar+gzip -v
                 ;;
               *)
                 echo "Unknown type $type"
