@@ -1,8 +1,8 @@
 name: Multi-Registry Image Sync
 
 on:
-  schedule:
-    - cron: '0 0 * * *'  # Run daily
+  # schedule:
+  #   - cron: '0 0 * * *'  # Run daily
   workflow_dispatch:
 
 jobs:
